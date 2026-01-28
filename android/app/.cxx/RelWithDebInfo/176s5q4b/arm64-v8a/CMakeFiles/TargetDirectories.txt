@@ -1,0 +1,2 @@
+D:/Projects/Flutter/kanisa/android/app/.cxx/RelWithDebInfo/176s5q4b/arm64-v8a/CMakeFiles/edit_cache.dir
+D:/Projects/Flutter/kanisa/android/app/.cxx/RelWithDebInfo/176s5q4b/arm64-v8a/CMakeFiles/rebuild_cache.dir

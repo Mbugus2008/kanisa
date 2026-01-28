@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kanisa Tablet Screenshots - 1920x1080</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: #1a1a2e;
+            padding: 40px;
+            color: white;
+        }
+        h1 { text-align: center; margin-bottom: 20px; }
+        .info { text-align: center; color: #888; margin-bottom: 30px; }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
+        }
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        button:hover { background: #45a049; }
+        .status { text-align: center; color: #4CAF50; margin-bottom: 20px; min-height: 30px; }
+        
+        #render-container {
+            position: absolute;
+            left: -9999px;
+            top: 0;
+        }
+        
+        .tablet-screenshot {
+            width: 1920px;
+            height: 1080px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            display: flex;
+            align-items: center;
+            padding: 60px;
+            font-family: 'Poppins', sans-serif;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .tablet-screenshot::before {
+            content: '';
+            position: absolute;
+            top: -100px;
+            right: -100px;
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+        
+        .left-content {
+            flex: 1;
+            padding-right: 60px;
+            z-index: 1;
+        }
+        
+        .screen-title {
+            font-size: 56px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+        }
+        
+        .screen-subtitle {
+            font-size: 28px;
+            color: rgba(255,255,255,0.8);
+            margin-bottom: 40px;
+        }
+        
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            color: white;
+            font-size: 24px;
+        }
+        
+        .feature-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+        }
+        
+        .tablet-frame {
+            width: 700px;
+            height: 500px;
+            background: #1a1a1a;
+            border-radius: 30px;
+            padding: 20px;
+            box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+            z-index: 1;
+        }
+        
+        .tablet-screen {
+            width: 100%;
+            height: 100%;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .app-header {
+            background: linear-gradient(135deg, #1e3c72, #2a5298);
+            padding: 30px 25px 20px;
+            color: white;
+        }
+        
+        .app-header h2 { font-size: 24px; }
+        .app-header p { font-size: 14px; opacity: 0.9; }
+        
+        .app-content {
+            flex: 1;
+            padding: 20px;
+            background: #f8f9fa;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .content-card {
+            background: white;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        
+        .content-card h3 {
+            font-size: 16px;
+            color: #333;
+            margin-bottom: 12px;
+        }
+        
+        .content-card p {
+            font-size: 13px;
+            color: #666;
+            line-height: 1.5;
+        }
+        
+        .event-mini {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .event-mini-date {
+            background: #1e3c72;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+        
+        .event-mini-date strong { font-size: 14px; }
+        
+        .event-mini-info h4 { font-size: 13px; color: #333; }
+        .event-mini-info p { font-size: 11px; color: #666; }
+        
+        .previews {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        .preview {
+            background: #333;
+            border-radius: 10px;
+            padding: 10px;
+            text-align: center;
+        }
+        .preview img {
+            width: 320px;
+            height: auto;
+            border-radius: 5px;
+        }
+        .preview p { margin-top: 10px; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <h1>📱 Kanisa Tablet Screenshots (10-inch)</h1>
+    <p class="info">Size: 1920 x 1080 pixels | 16:9 aspect ratio | Perfect for Play Store tablets</p>
+    
+    <div class="buttons">
+        <button onclick="generateTablet(1)">📥 1. Welcome</button>
+        <button onclick="generateTablet(2)">📥 2. Events</button>
+        <button onclick="generateTablet(3)">📥 3. Bible</button>
+        <button onclick="generateTablet(4)">📥 4. Community</button>
+    </div>
+    
+    <div class="status" id="status"></div>
+    <div class="previews" id="previews"></div>
+    
+    <div id="render-container"></div>
+
+    <script>
+        const tablets = {
+            1: {
+                title: "Welcome to Kanisa",
+                subtitle: "Your Church Community App",
+                filename: "kanisa_tablet_1_welcome.png",
+                features: [
+                    { icon: "⛪", text: "Connect with your church" },
+                    { icon: "📅", text: "Stay updated on events" },
+                    { icon: "📖", text: "Read the Bible daily" },
+                    { icon: "💝", text: "Give securely" }
+                ],
+                appTitle: "Welcome, John! 👋",
+                appSubtitle: "Kirigiti PCEA Church",
+                cards: [
+                    { title: "📅 Upcoming", content: "Sunday Service<br>9:00 AM - Sanctuary" },
+                    { title: "📖 Verse", content: "\"For God so loved the world...\"<br>— John 3:16" },
+                    { title: "🎵 Sermon", content: "Faith in Action<br>Rev. Peter Mwangi" }
+                ]
+            },
+            2: {
+                title: "Church Events",
+                subtitle: "Never Miss a Gathering",
+                filename: "kanisa_tablet_2_events.png",
+                features: [
+                    { icon: "📆", text: "View all upcoming events" },
+                    { icon: "🔔", text: "Get event reminders" },
+                    { icon: "📍", text: "Find event locations" },
+                    { icon: "👥", text: "See who's attending" }
+                ],
+                appTitle: "📅 Events",
+                appSubtitle: "Upcoming gatherings",
+                events: [
+                    { day: "SUN", date: "05", title: "Sunday Service", time: "9:00 AM" },
+                    { day: "WED", date: "08", title: "Bible Study", time: "6:00 PM" },
+                    { day: "SAT", date: "11", title: "Youth Conference", time: "10:00 AM" }
+                ]
+            },
+            3: {
+                title: "Read the Bible",
+                subtitle: "Daily Inspiration & Study",
+                filename: "kanisa_tablet_3_bible.png",
+                features: [
+                    { icon: "📖", text: "Full Bible access" },
+                    { icon: "🔖", text: "Bookmark favorites" },
+                    { icon: "📝", text: "Add personal notes" },
+                    { icon: "🌅", text: "Daily devotionals" }
+                ],
+                appTitle: "📖 Bible",
+                appSubtitle: "Read and reflect",
+                cards: [
+                    { title: "Verse of the Day", content: "\"Trust in the LORD with all your heart...\"<br>— Proverbs 3:5" },
+                    { title: "Continue Reading", content: "Psalm 23<br>The LORD is my shepherd" },
+                    { title: "Bookmarked", content: "Jeremiah 29:11<br>Plans to prosper you" }
+                ]
+            },
+            4: {
+                title: "Church Community",
+                subtitle: "Connect & Grow Together",
+                filename: "kanisa_tablet_4_community.png",
+                features: [
+                    { icon: "👥", text: "Join fellowship groups" },
+                    { icon: "🙏", text: "Share prayer requests" },
+                    { icon: "💬", text: "Connect with members" },
+                    { icon: "📢", text: "Get announcements" }
+                ],
+                appTitle: "👥 Community",
+                appSubtitle: "Your church family",
+                cards: [
+                    { title: "Your Groups", content: "Men's Fellowship<br>Youth Ministry" },
+                    { title: "Prayer Requests", content: "3 new requests<br>Pray together" },
+                    { title: "Announcements", content: "New Year Service<br>January 1st" }
+                ]
+            }
+        };
+        
+        async function generateTablet(num) {
+            const data = tablets[num];
+            const status = document.getElementById('status');
+            status.textContent = `Generating ${data.filename}...`;
+            
+            const container = document.getElementById('render-container');
+            
+            let rightContent = '';
+            if (data.events) {
+                rightContent = `
+                    <div class="app-header">
+                        <h2>${data.appTitle}</h2>
+                        <p>${data.appSubtitle}</p>
+                    </div>
+                    <div class="app-content" style="flex-direction: column; gap: 10px;">
+                        ${data.events.map(e => `
+                            <div class="event-mini">
+                                <div class="event-mini-date"><span>${e.day}</span><strong>${e.date}</strong></div>
+                                <div class="event-mini-info"><h4>${e.title}</h4><p>${e.time}</p></div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } else {
+                rightContent = `
+                    <div class="app-header">
+                        <h2>${data.appTitle}</h2>
+                        <p>${data.appSubtitle}</p>
+                    </div>
+                    <div class="app-content">
+                        ${data.cards.map(c => `
+                            <div class="content-card">
+                                <h3>${c.title}</h3>
+                                <p>${c.content}</p>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            }
+            
+            container.innerHTML = `
+                <div class="tablet-screenshot" id="capture">
+                    <div class="left-content">
+                        <h1 class="screen-title">${data.title}</h1>
+                        <p class="screen-subtitle">${data.subtitle}</p>
+                        <div class="features-list">
+                            ${data.features.map(f => `
+                                <div class="feature-item">
+                                    <div class="feature-icon">${f.icon}</div>
+                                    <span>${f.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                    <div class="tablet-frame">
+                        <div class="tablet-screen">
+                            ${rightContent}
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            await new Promise(r => setTimeout(r, 500));
+            
+            const element = document.getElementById('capture');
+            
+            try {
+                const canvas = await html2canvas(element, {
+                    width: 1920,
+                    height: 1080,
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+                
+                const link = document.createElement('a');
+                link.download = data.filename;
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                status.textContent = `✅ Downloaded: ${data.filename}`;
+                
+                const previews = document.getElementById('previews');
+                const preview = document.createElement('div');
+                preview.className = 'preview';
+                preview.innerHTML = `<img src="${canvas.toDataURL('image/png')}"><p>${data.filename}</p>`;
+                previews.appendChild(preview);
+                
+            } catch (error) {
+                status.textContent = `❌ Error: ${error.message}`;
+            }
+        }
+    </script>
+</body>
+</html>

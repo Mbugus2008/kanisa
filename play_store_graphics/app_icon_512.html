@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kanisa App Icon - 512x512</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: #1a1a2e;
+            padding: 40px;
+            gap: 30px;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        h1 { color: white; }
+        .info { color: #888; font-size: 14px; }
+        
+        button {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 18px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-family: 'Poppins', sans-serif;
+        }
+        button:hover { background: #45a049; }
+        
+        .status { color: #4CAF50; min-height: 30px; }
+        
+        .icon-container {
+            width: 512px;
+            height: 512px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            border-radius: 102px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .icon-container::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            right: -50px;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .icon-container::after {
+            content: '';
+            position: absolute;
+            bottom: -80px;
+            left: -80px;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 50%;
+        }
+        
+        .church-icon {
+            font-size: 200px;
+            z-index: 1;
+            filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3));
+        }
+        
+        .app-name {
+            color: white;
+            font-size: 72px;
+            font-weight: 700;
+            margin-top: 10px;
+            z-index: 1;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            letter-spacing: 2px;
+        }
+        
+        /* Preview section */
+        .preview-section {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .preview-img {
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <h1>📱 Kanisa App Icon</h1>
+    <p class="info">Size: 512 x 512 pixels | Format: PNG | Ready for Play Store</p>
+    
+    <button onclick="downloadIcon()">📥 Download App Icon (512x512 PNG)</button>
+    <div class="status" id="status"></div>
+    
+    <div class="icon-container" id="icon">
+        <span class="church-icon">⛪</span>
+        <span class="app-name">Kanisa</span>
+    </div>
+    
+    <div class="preview-section" id="preview"></div>
+
+    <script>
+        async function downloadIcon() {
+            const status = document.getElementById('status');
+            status.textContent = 'Generating icon...';
+            
+            const element = document.getElementById('icon');
+            
+            try {
+                const canvas = await html2canvas(element, {
+                    width: 512,
+                    height: 512,
+                    scale: 1,
+                    useCORS: true,
+                    backgroundColor: null,
+                    logging: false
+                });
+                
+                const link = document.createElement('a');
+                link.download = 'kanisa_app_icon_512x512.png';
+                link.href = canvas.toDataURL('image/png');
+                link.click();
+                
+                status.textContent = '✅ Downloaded: kanisa_app_icon_512x512.png';
+                
+                // Show preview
+                const preview = document.getElementById('preview');
+                const img = document.createElement('img');
+                img.src = canvas.toDataURL('image/png');
+                img.width = 128;
+                img.className = 'preview-img';
+                preview.innerHTML = '<span style="color:#888">Preview (128px):</span>';
+                preview.appendChild(img);
+                
+            } catch (error) {
+                status.textContent = '❌ Error: ' + error.message;
+            }
+        }
+    </script>
+</body>
+</html>
