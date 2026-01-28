@@ -16,6 +16,9 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
+
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
@@ -28,6 +31,18 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+
+      - name: Create iOS folder if missing
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create . --platforms=ios
+          fi
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios && pod install --repo-update || pod install
+        continue-on-error: true
 
       - name: Run Flutter analyze
         run: flutter analyze --no-fatal-infos
@@ -46,8 +61,9 @@ jobs:
           name: ios-build
           path: build/ios/iphoneos/Runner.app
           retention-days: 7
+        if: success()
 
-  # Optional: Build for simulator testing
+  # Build for simulator testing
   build-ios-simulator:
     name: Build iOS Simulator
     runs-on: macos-latest
@@ -55,6 +71,9 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Select Xcode version
+        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -66,17 +85,33 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
+      - name: Create iOS folder if missing
+        run: |
+          if [ ! -d "ios" ]; then
+            flutter create . --platforms=ios
+          fi
+
+      - name: Install CocoaPods
+        run: |
+          sudo gem install cocoapods
+          cd ios && pod install --repo-update || pod install
+        continue-on-error: true
+
       - name: Build iOS Simulator
-        run: flutter build ios --simulator
+        run: flutter build ios --debug --simulator
 
       - name: List available simulators
         run: xcrun simctl list devices available
 
       - name: Boot iOS Simulator
         run: |
-          SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone 15" | head -1 | grep -oE '[0-9A-F-]{36}')
-          xcrun simctl boot "$SIMULATOR_ID" || true
-          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+          # Find an available iPhone simulator
+          SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone" | grep -v "unavailable" | head -1 | grep -oE '[0-9A-F-]{36}')
+          if [ -n "$SIMULATOR_ID" ]; then
+            xcrun simctl boot "$SIMULATOR_ID" || true
+            echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
 
       - name: Install app on Simulator
         run: |
@@ -85,14 +120,16 @@ jobs:
 
       - name: Take screenshot
         run: |
-          sleep 5
+          sleep 10
           xcrun simctl io booted screenshot simulator_screenshot.png
         continue-on-error: true
 
-      - name: Upload simulator screenshot
+      - name: Upload simulator artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ios-simulator-screenshot
-          path: simulator_screenshot.png
+          name: ios-simulator-build
+          path: |
+            build/ios/iphonesimulator/Runner.app
+            simulator_screenshot.png
           retention-days: 7
         if: always()
