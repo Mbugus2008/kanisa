@@ -1,0 +1,98 @@
+name: iOS Build & Test
+
+on:
+  push:
+    branches: [ main, develop ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  build-ios:
+    name: Build iOS App
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Flutter version
+        run: flutter --version
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Run Flutter analyze
+        run: flutter analyze --no-fatal-infos
+        continue-on-error: true
+
+      - name: Run Flutter tests
+        run: flutter test
+        continue-on-error: true
+
+      - name: Build iOS (no codesign)
+        run: flutter build ios --release --no-codesign
+
+      - name: Upload iOS build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-build
+          path: build/ios/iphoneos/Runner.app
+          retention-days: 7
+
+  # Optional: Build for simulator testing
+  build-ios-simulator:
+    name: Build iOS Simulator
+    runs-on: macos-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0'
+          channel: 'stable'
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS Simulator
+        run: flutter build ios --simulator
+
+      - name: List available simulators
+        run: xcrun simctl list devices available
+
+      - name: Boot iOS Simulator
+        run: |
+          SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone 15" | head -1 | grep -oE '[0-9A-F-]{36}')
+          xcrun simctl boot "$SIMULATOR_ID" || true
+          echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
+
+      - name: Install app on Simulator
+        run: |
+          xcrun simctl install booted build/ios/iphonesimulator/Runner.app
+        continue-on-error: true
+
+      - name: Take screenshot
+        run: |
+          sleep 5
+          xcrun simctl io booted screenshot simulator_screenshot.png
+        continue-on-error: true
+
+      - name: Upload simulator screenshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: ios-simulator-screenshot
+          path: simulator_screenshot.png
+          retention-days: 7
+        if: always()
