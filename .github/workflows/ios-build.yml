@@ -10,14 +10,11 @@ on:
 jobs:
   build-ios:
     name: Build iOS App
-    runs-on: macos-latest
+    runs-on: macos-14
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -26,24 +23,17 @@ jobs:
           channel: 'stable'
           cache: true
 
-      - name: Flutter version
-        run: flutter --version
+      - name: Flutter doctor
+        run: flutter doctor -v
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create iOS folder if missing
+      - name: Install CocoaPods dependencies
         run: |
-          if [ ! -d "ios" ]; then
-            flutter create . --platforms=ios
-          fi
-
-      - name: Install CocoaPods
-        run: |
-          sudo gem install cocoapods
-          cd ios && pod install --repo-update || pod install
-        continue-on-error: true
-
+          cd ios
+          pod install --repo-update
+        
       - name: Run Flutter analyze
         run: flutter analyze --no-fatal-infos
         continue-on-error: true
@@ -66,14 +56,11 @@ jobs:
   # Build for simulator testing
   build-ios-simulator:
     name: Build iOS Simulator
-    runs-on: macos-latest
+    runs-on: macos-14
     
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
-      - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode_15.4.app/Contents/Developer
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -85,51 +72,18 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Create iOS folder if missing
+      - name: Install CocoaPods dependencies
         run: |
-          if [ ! -d "ios" ]; then
-            flutter create . --platforms=ios
-          fi
-
-      - name: Install CocoaPods
-        run: |
-          sudo gem install cocoapods
-          cd ios && pod install --repo-update || pod install
-        continue-on-error: true
+          cd ios
+          pod install --repo-update
 
       - name: Build iOS Simulator
         run: flutter build ios --debug --simulator
 
-      - name: List available simulators
-        run: xcrun simctl list devices available
-
-      - name: Boot iOS Simulator
-        run: |
-          # Find an available iPhone simulator
-          SIMULATOR_ID=$(xcrun simctl list devices available | grep "iPhone" | grep -v "unavailable" | head -1 | grep -oE '[0-9A-F-]{36}')
-          if [ -n "$SIMULATOR_ID" ]; then
-            xcrun simctl boot "$SIMULATOR_ID" || true
-            echo "SIMULATOR_ID=$SIMULATOR_ID" >> $GITHUB_ENV
-          fi
-        continue-on-error: true
-
-      - name: Install app on Simulator
-        run: |
-          xcrun simctl install booted build/ios/iphonesimulator/Runner.app
-        continue-on-error: true
-
-      - name: Take screenshot
-        run: |
-          sleep 10
-          xcrun simctl io booted screenshot simulator_screenshot.png
-        continue-on-error: true
-
-      - name: Upload simulator artifacts
+      - name: Upload simulator build
         uses: actions/upload-artifact@v4
         with:
           name: ios-simulator-build
-          path: |
-            build/ios/iphonesimulator/Runner.app
-            simulator_screenshot.png
+          path: build/ios/iphonesimulator/Runner.app
           retention-days: 7
-        if: always()
+        if: success()
