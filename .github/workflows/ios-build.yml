@@ -82,10 +82,17 @@ jobs:
       - name: Build iOS Simulator
         run: flutter build ios --debug --simulator
 
+      - name: Create ZIP for Appetize.io
+        run: |
+          cd build/ios/iphonesimulator
+          zip -r kanisa-simulator.zip Runner.app
+
       - name: Upload simulator build
         uses: actions/upload-artifact@v4
         with:
           name: ios-simulator-build
-          path: build/ios/iphonesimulator/Runner.app
+          path: |
+            build/ios/iphonesimulator/Runner.app
+            build/ios/iphonesimulator/kanisa-simulator.zip
           retention-days: 7
         if: success()
