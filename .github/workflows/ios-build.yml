@@ -40,11 +40,20 @@ jobs:
       - name: Build iOS (no codesign)
         run: flutter build ios --release --no-codesign
 
+      - name: Create IPA for Appetize
+        run: |
+          mkdir -p Payload
+          cp -r build/ios/iphoneos/Runner.app Payload/
+          zip -r kanisa.ipa Payload
+          rm -rf Payload
+
       - name: Upload iOS build artifacts
         uses: actions/upload-artifact@v4
         with:
           name: ios-build
-          path: build/ios/iphoneos/Runner.app
+          path: |
+            build/ios/iphoneos/Runner.app
+            kanisa.ipa
           retention-days: 7
         if: success()
 
